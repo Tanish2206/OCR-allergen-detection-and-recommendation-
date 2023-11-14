@@ -1,0 +1,56 @@
+//Login API - (/login) Post request
+INPUT-json
+Example-
+{
+    "Username":"Tajain",
+    "Password":"hello"
+}
+return {token}
+////////////////////////////////////////////////
+
+
+//Create User - (/users) Post request
+INPUT-json
+Example-
+{
+    "Username":"xyz",
+    "Password":"xyz",
+    "email":"xyz",
+    "Firstname":"xyz",
+    "Lastname":"xyz",
+}
+//////////////////////////////////////////////////
+
+
+
+//Availabe allergen to select -(/users) get request 
+return {id:id,name:allergen name}
+//////////////////////////////////////////////////
+
+
+//Get User details -(/user/<u_name>) get user details
+return(Firstname,Lastname,email,allergens)
+
+/////////////////////////////////////////////////////
+
+
+//Add allergen (/user/<u_name>) -post request
+Input-json
+Example{
+    
+    "allergenid":PROVIDE ALLERGEN ID
+}
+
+//////////////////////////////////////////////////////
+
+// Update User (/user/<u_name>) - Patch request:
+input-json
+Example
+{
+    
+    "Firstname":"jdfid",
+    "Lastname":"dfkjdfj",
+    "email":"good@gmail.com"
+}
+
+
