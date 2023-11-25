@@ -8,7 +8,7 @@ from PIL import Image, ImageOps
 
 import pytesseract
 
-main_image='test-300.png'
+main_image='assets/ingre2.jpg'
 
 # Set the path to the Tesseract executable
 pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
@@ -140,7 +140,7 @@ print(extracted_text)
 
 
 # List of image paths
-image_paths = [ "realtimeImage5.jpg"]
+image_paths = [ "assets/ingre2.jpg"]
 
 for image_path in image_paths:
     print(f"\nProcessing image: {image_path}")
