@@ -1,0 +1,20 @@
+//INPUT
+{
+    "image1":image,
+    "image2":image
+}
+
+//OUTPUT
+{
+    "isAllergic":boolean,   //if true then show recommendations else dont show anything
+    "recommendations":[
+        {
+            ProductName:string,
+            Protein:string,
+            Carbs:string,
+            Fats:string,
+            ImagePath:string
+        },
+        ...
+    ]
+}
