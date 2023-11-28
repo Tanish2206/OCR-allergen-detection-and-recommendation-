@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "theme";
+import UpdateInfoPage from "scenes/updateInfoPage";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path="/" element={<LoginPage />} />
             <Route path="/home" element={isAuth ? <HomePage /> : <Navigate to="/" />} />
             <Route path="/result" element={isAuth ? <ResultPage /> : <Navigate to="/" />} />
+            <Route path="/update" element={isAuth ? <UpdateInfoPage /> : <Navigate to="/" />} />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

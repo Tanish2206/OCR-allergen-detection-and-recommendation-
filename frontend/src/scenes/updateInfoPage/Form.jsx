@@ -13,7 +13,7 @@ import {
 import { Formik } from "formik"
 import * as yup from "yup"
 import { useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { setLogin } from "state"
 
 // form validator
@@ -29,11 +29,6 @@ const registerSchema = yup.object().shape({
     occupation: yup.string().required("required")    
 })
 
-const loginSchema = yup.object().shape({
-    username: yup.string().required("required"),
-    password: yup.string().required("required"),  
-})
-
 const initialValuesRegister = {
     firstName: "",
     lastName: "",
@@ -46,15 +41,11 @@ const initialValuesRegister = {
     gender: "",
 }
 
-const initialValuesLogin = {
-    username: "",
-    password: "",
-}
-
 /**Will handle both login and register forms */
-const Form = () => {
+const UpdateForm = () => {
     const [allergens,setAllergens]=useState([])
     const [pageType, setPageType] = useState("login")
+    const user = useSelector((state) => state.user)
     const { palette } = useTheme()
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -62,123 +53,124 @@ const Form = () => {
     const isLogin = pageType === "login"
     const isRegister = pageType === "register"
 
-    //function to communicate to backend
-    const register = async (values, onSubmitProps) => {
-        // every value that is we've created in the text field will show up as values
-        // we have a picture image so we have to do sum a lil different
-        
-        const data={
-            "Username":values["username"],
-            "Password":values["password"],
-            "email":values["email"],
-            "Firstname":values["firstName"],
-            "Lastname":values["lastName"],
-        };
-        console.log(values);
-        console.log(data);
+    console.log(user)
 
-        //sending post request 
-        const registerResponse = await fetch(
-            "http://localhost:5000/users",
-            {
-                method:"POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(data)
-            }
-        )
-        const savedUser = await registerResponse.json()
-        const errorStatus = await registerResponse.status
+    //function to communicate to backend
+    // const register = async (values, onSubmitProps) => {
+    //     // every value that is we've created in the text field will show up as values
+    //     // we have a picture image so we have to do sum a lil different
         
-        if(savedUser) {
-            if(errorStatus!=201) {
-                console.log(savedUser);
-                alert(savedUser["message"])
-            }
-            else {
-                setPageType("login")
-                onSubmitProps.resetForm() //make sure our form is reset
-            }
-        }
-    }
+    //     const data={
+    //         "Username":values["username"],
+    //         "Password":values["password"],
+    //         "email":values["email"],
+    //         "Firstname":values["firstName"],
+    //         "Lastname":values["lastName"],
+    //     };
+    //     console.log(values);
+    //     console.log(data);
+
+    //     //sending post request 
+    //     // const registerResponse = await fetch(
+    //     //     "http://localhost:5000/users",
+    //     //     {
+    //     //         method:"POST",
+    //     //         headers: {"Content-Type": "application/json"},
+    //     //         body: JSON.stringify(data)
+    //     //     }
+    //     // )
+    //     // const savedUser = await registerResponse.json()
+    //     // const errorStatus = await registerResponse.status
+        
+    //     // if(savedUser) {
+    //     //     if(errorStatus!=201) {
+    //     //         console.log(savedUser);
+    //     //         alert(savedUser["message"])
+    //     //     }
+    //     //     else {
+    //     //         setPageType("login")
+    //     //         onSubmitProps.resetForm() //make sure our form is reset
+    //     //     }
+    //     // }
+    // }
 
     // function to communicate to backend
-    const login = async (values, onSubmitProps) => {
+    // const login = async (values, onSubmitProps) => {
 
-        console.log(values);
+    //     console.log(values);
         
-        const loggedInResponse = await fetch(
-            "http://localhost:5000/login",
-            {
-                method:"POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    "Username":values.username,
-                    "Password":values.password
-                })
-            }
-        ).catch((e)=>{
-            alert("Invalid username or password")
-            onSubmitProps.resetForm();
-        })
+    //     const loggedInResponse = await fetch(
+    //         "http://localhost:5000/login",
+    //         {
+    //             method:"POST",
+    //             headers: {"Content-Type": "application/json"},
+    //             body: JSON.stringify({
+    //                 "Username":values.username,
+    //                 "Password":values.password
+    //             })
+    //         }
+    //     ).catch((e)=>{
+    //         alert("Invalid username or password")
+    //         onSubmitProps.resetForm();
+    //     })
         
-        const token = await loggedInResponse.json();
+    //     const token = await loggedInResponse.json();
 
-        const user_details_response=await fetch(
-            `http://localhost:5000/user/${values.username}`,
-            {
-                method:"GET",
-                headers: {"Content-Type": "application/json","x-access-token":token["token"]}
-            }
-        ).catch((e)=>{
-            alert("Invalid username or password")
-            onSubmitProps.resetForm();
-        })
+    //     const user_details_response=await fetch(
+    //         `http://localhost:5000/user/${values.username}`,
+    //         {
+    //             method:"GET",
+    //             headers: {"Content-Type": "application/json","x-access-token":token["token"]}
+    //         }
+    //     ).catch((e)=>{
+    //         alert("Invalid username or password")
+    //         onSubmitProps.resetForm();
+    //     })
 
-        const data = await user_details_response.json();
-        console.log(data);
+    //     const data = await user_details_response.json();
+    //     console.log(data);
 
-        const loggedIn={
-            "user":{
-                "__id": data["users"]["Username"],
-                "firstName": data["users"]["FirstName"],
-                "lastName": data["users"]["LastName"],
-                "email": data["users"]["Email"],
-                "occupation": "CODER",
-                "location": "PUNE",
-                "gender":"Male",
-                "allergens":data["users"]["allergen_list"]
-            },
-            "token":token
-        }
+    //     const loggedIn={
+    //         "user":{
+    //             "__id": data["users"]["Username"],
+    //             "firstName": data["users"]["FirstName"],
+    //             "lastName": data["users"]["LastName"],
+    //             "occupation": "CODER",
+    //             "location": "PUNE",
+    //             "gender":"Male",
+    //             "allergens":data["users"]["allergen_list"]
+    //         },
+    //         "token":token
+    //     }
 
-        onSubmitProps.resetForm()
-        if (loggedInResponse.status==201 && user_details_response.status==200 ) {
-            //coming from redux. we are setting the user and state to be used throughout the app
-            dispatch(
-                setLogin({
-                    user: loggedIn.user,
-                    token: loggedIn.token
-                })
-            )
-            navigate("/home")
-        }
-        else{
-            alert("Wrong username or password");
-        }
-    }
+    //     onSubmitProps.resetForm()
+    //     if (loggedInResponse.status==201 && user_details_response.status==200 ) {
+    //         //coming from redux. we are setting the user and state to be used throughout the app
+    //         dispatch(
+    //             setLogin({
+    //                 user: loggedIn.user,
+    //                 token: loggedIn.token
+    //             })
+    //         )
+    //         navigate("/home")
+    //     }
+    //     else{
+    //         alert("Wrong username or password");
+    //     }
+    // }
 
     const handleFormSubmit = async(values, onSubmitProps) => {
         values.allergens=allergens
-        //console.log(values);
-        if (isLogin) await login(values, onSubmitProps)
-        if (isRegister) await register(values, onSubmitProps)
+        console.log(values);
+        // if (isLogin) await login(values, onSubmitProps)
+        // if (isRegister) await register(values, onSubmitProps)
     }
 
     return (
         <Formik
             onSubmit={handleFormSubmit}
-            initialValues={isLogin ? initialValuesLogin : initialValuesRegister}
-            validationSchema={isLogin ? loginSchema : registerSchema}    
+            initialValues={initialValuesRegister}
+            validationSchema={registerSchema}    
         >
             {({
                 values,
@@ -202,7 +194,7 @@ const Form = () => {
                         }}  
                     >
                         {/**If the page type is register */}
-                        {isRegister && (
+                        {
                             <>
                                 <TextField 
                                     required
@@ -289,7 +281,7 @@ const Form = () => {
                                     <MenuItem value={"Soy"}>Soy</MenuItem>
                                 </Select>
                             </>
-                        )}
+                        }
 
                         {/**Login */}
                         <TextField 
@@ -330,28 +322,8 @@ const Form = () => {
                                 "&:hover": { color: palette.primary.main }
                             }}
                         >
-                            {isLogin ? "LOGIN" : "REGISTER"}
+                            Update
                         </Button>
-
-                        {/**Switch between login and register. Updates pageType state */}
-                        <Typography
-                            onClick={() => {
-                                setPageType(isLogin ? "register" : "login")
-                                resetForm()
-                            }}
-                            sx={{
-                                textDecoration: "underline",
-                                color: palette.primary.main,
-                                "&:hover": {
-                                    cursor: "pointer",
-                                    color: palette.primary.dark,
-                                }
-                            }}
-                        >
-                            {isLogin 
-                                ? "Don't have an account? Sign Up here." 
-                                : "Already have an account? Login here."}
-                        </Typography>
                     </Box>
                 </form>
             )}
@@ -359,4 +331,4 @@ const Form = () => {
     )
 }
 
-export default Form
+export default UpdateForm

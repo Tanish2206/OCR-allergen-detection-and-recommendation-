@@ -2,12 +2,16 @@ from flask import Flask
 from flask_restful import Resource,Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS,cross_origin
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
 app=Flask(__name__)
+cors=CORS(app)
+app.config['CORS_HEADERS']='Content-Type'
+
 api = Api(app)
 bcrypt = Bcrypt(app)
 app.app_context().push()
