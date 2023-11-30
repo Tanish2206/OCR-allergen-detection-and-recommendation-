@@ -95,6 +95,9 @@ class Create_User(Resource):
                     email=data['email'],
                     firstname=data['Firstname'],
                     lastname=data['Lastname'],
+                    gender=data['Gender'],
+                    location=data['Location'],
+                    occupation=data['Occupation']
                     )
                     db.session.add(new_user)
                     db.session.commit()
@@ -117,7 +120,7 @@ class User_Methods(Resource):
                     result= AllergenCategory.query.filter_by(id=i.allergen_category_id).first()
                     allergen_list.append(result.allergytype)
 
-                d = {'Username': u_name, 'FirstName': user.firstname, 'LastName': user.lastname, 'Email':user.email,'allergen_list':allergen_list}
+                d = {'Username': u_name, 'FirstName': user.firstname, 'LastName': user.lastname, 'Email':user.email,'allergen_list':allergen_list,'Gender':user.gender,'Location':user.location,'Occupation':user.occupation}
                 return ({'users': d}), 200
             else:
                 return {'message': 'No user found!'}, 404
@@ -152,6 +155,9 @@ class User_Methods(Resource):
                 user_to_update.firstname = data['Firstname']
                 user_to_update.lastname = data['Lastname']
                 user_to_update.email = data['email']
+                user_to_update.location = data['Location']
+                user_to_update.occupation = data['Occupation']
+
                 db.session.commit()
          
             return {'message':'successfully Updated'},201

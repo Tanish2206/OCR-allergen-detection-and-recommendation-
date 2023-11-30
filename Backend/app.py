@@ -24,9 +24,11 @@ app.secret_key=os.getenv('SECRET_KEY')
 db = SQLAlchemy(app)
 
 from User_api import Create_User,Login,User_Methods
+from ImageUpload import UploadResult
 api.add_resource(Create_User, '/users')
 api.add_resource(Login,'/login')
 api.add_resource(User_Methods, "/user/<u_name>")
+api.add_resource(UploadResult, "/upload/<u_name>")
   
 
 
