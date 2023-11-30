@@ -1,6 +1,7 @@
 import {
     EditOutlined,
     DeleteOutlined,
+    Help,
 } from "@mui/icons-material";
 import {
     Box,
@@ -18,31 +19,59 @@ import UserImage from "components/UserImage";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {Dialog,DialogTitle} from '@mui/material';
+
+function SimpleDialog(props) {
+    const { open ,onClose} = props;
+    const { palette } = useTheme()
+    const medium = palette.neutral.medium;
+  
+    return (
+      <Dialog open={open} onClose={onClose}>
+        <WidgetWrapper>
+        <DialogTitle>Image Upload Guidelines</DialogTitle>
+        <DialogTitle>Please Upload Images of such quality</DialogTitle>
+            <FlexBetween gap="1.5rem">
+                <Box
+                    p="1rem"
+                >
+                    <img src="assets/nutri.jpg" height={"100%"} width={"100%"}/>
+                </Box>
+                <Box
+                    p="1rem"
+                >
+                    <img src="assets/ingre.jpg" height={"100%"} width={"100%"}/>
+                </Box>
+            </FlexBetween>
+        </WidgetWrapper>
+      </Dialog>
+    );
+}
 
 
-/**
- * @param picturePath: path of the user profile photo
- * 
- * Widget component for creating a new post
- */
-const MyPostWidget = ({ picturePath }) => {
+const UploadImageWidget = ({ picturePath }) => {
     //actual image
     const [image1, setImage1] = useState(null)
     const [image2, setImage2] = useState(null)
+    const [helpDialog, setHelp] = useState(false)
     const { palette } = useTheme()
     const medium = palette.neutral.medium
+
 
     //handles post api call
     const handlePost = () => {
 
         let formData=new FormData();
 
-        if (image1) {
+        if (image1 && image2) {
             formData.append("image1",image1);
-        }
-        if (image2) {
             formData.append("image2",image2);
         }
+        else{
+            alert("please upload both images")
+        }
+
+        console.log(formData);
 
         // const response = await fetch(`http://localhost:3001/posts`, {
         //     method: "POST",
@@ -61,6 +90,10 @@ const MyPostWidget = ({ picturePath }) => {
 
     return (
         <WidgetWrapper>
+            <SimpleDialog
+                open={helpDialog}
+                onClose={()=>setHelp(false)}
+            />
             <FlexBetween gap="1.5rem">
                 <Box
                     borderRadius="5px"
@@ -150,6 +183,7 @@ const MyPostWidget = ({ picturePath }) => {
                     </Dropzone>
                 </Box>
                 
+                <Help onClick={()=>setHelp(true)}></Help>
             </FlexBetween>
             
             <Divider sx={{ margin: "1.25rem 0"}} />
@@ -163,11 +197,11 @@ const MyPostWidget = ({ picturePath }) => {
                             borderRadius: "3rem"
                         }}
                 >
-                        POST
+                        UPLOAD
                 </Button>
             </FlexBetween>
         </WidgetWrapper>
     )
 }
 
-export default MyPostWidget
+export default UploadImageWidget

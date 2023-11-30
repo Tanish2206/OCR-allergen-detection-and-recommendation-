@@ -79,7 +79,7 @@ const Form = () => {
 
         //sending post request 
         const registerResponse = await fetch(
-            "http://localhost:5000/users",
+            "/users",
             {
                 method:"POST",
                 headers: {"Content-Type": "application/json"},
@@ -107,7 +107,7 @@ const Form = () => {
         console.log(values);
         
         const loggedInResponse = await fetch(
-            "http://localhost:5000/login",
+            "/login",
             {
                 method:"POST",
                 headers: {"Content-Type": "application/json"},
@@ -124,7 +124,7 @@ const Form = () => {
         const token = await loggedInResponse.json();
 
         const user_details_response=await fetch(
-            `http://localhost:5000/user/${values.username}`,
+            `/user/${values.username}`,
             {
                 method:"GET",
                 headers: {"Content-Type": "application/json","x-access-token":token["token"]}
@@ -212,7 +212,7 @@ const Form = () => {
                                     value={values.firstName}
                                     name="firstName"
                                     error={Boolean(touched.firstName) && Boolean(errors.firstName)}
-                                    helperText={touched.firstName && errors.firstName}
+                                    helpertext={touched.firstName && errors.firstName}
                                     sx={{ gridColumn: "span 2" }}
                                 />
                                 <TextField 
@@ -223,7 +223,7 @@ const Form = () => {
                                     value={values.lastName}
                                     name="lastName"
                                     error={Boolean(touched.lastName) && Boolean(errors.lastName)}
-                                    helperText={touched.lastName && errors.lastName}
+                                    helpertext={touched.lastName && errors.lastName}
                                     sx={{ gridColumn: "span 2" }}
                                 />
                                 <TextField 
@@ -234,7 +234,7 @@ const Form = () => {
                                     value={values.email}
                                     name="email"
                                     error={Boolean(touched.email) && Boolean(errors.email)}
-                                    helperText={touched.email && errors.email}
+                                    helpertext={touched.email && errors.email}
                                     sx={{ gridColumn: "span 4" }}
                                 />
                                 <TextField 
@@ -245,7 +245,7 @@ const Form = () => {
                                     value={values.location}
                                     name="location"
                                     error={Boolean(touched.location) && Boolean(errors.location)}
-                                    helperText={touched.location && errors.location}
+                                    helpertext={touched.location && errors.location}
                                     sx={{ gridColumn: "span 4" }}
                                 />
                                 <TextField 
@@ -256,7 +256,7 @@ const Form = () => {
                                     value={values.occupation}
                                     name="occupation"
                                     error={Boolean(touched.occupation) && Boolean(errors.occupation)}
-                                    helperText={touched.occupation && errors.occupation}
+                                    helpertext={touched.occupation && errors.occupation}
                                     sx={{ gridColumn: "span 4" }}
                                 />
                                 <InputLabel>Gender</InputLabel>
@@ -268,7 +268,7 @@ const Form = () => {
                                     value={values.gender}
                                     name="gender"
                                     error={Boolean(touched.gender) && Boolean(errors.gender)}
-                                    helperText={touched.gender && errors.gender}
+                                    helpertext={touched.gender && errors.gender}
                                     sx={{ gridColumn: "span 4" }}
                                 >
                                     <MenuItem value={"Male"}>Male</MenuItem>
@@ -299,7 +299,7 @@ const Form = () => {
                             value={values.username}
                             name="username"
                             error={Boolean(touched.username) && Boolean(errors.username)}
-                            helperText={touched.username && errors.username}
+                            helpertext={touched.username && errors.username}
                             sx={{ gridColumn: "span 4" }}
                         />
                         <TextField 
@@ -310,7 +310,7 @@ const Form = () => {
                             value={values.password}
                             name="password"
                             error={Boolean(touched.password) && Boolean(errors.password)}
-                            helperText={touched.password && errors.password}
+                            helpertext={touched.password && errors.password}
                             sx={{ gridColumn: "span 4" }}
                         />
 

@@ -14,7 +14,7 @@ import { Formik } from "formik"
 import * as yup from "yup"
 import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
-import { setLogin } from "state"
+import { setLogin, setLogout } from "state"
 
 // form validator
 // .string() ensures that it is a string
@@ -22,24 +22,12 @@ import { setLogin } from "state"
 const registerSchema = yup.object().shape({
     firstName: yup.string().required("required"),
     lastName: yup.string().required("required"),
-    username: yup.string().required("required"),
     email: yup.string().email("invalid email").required("required"),
-    password: yup.string().required("required"),
     location: yup.string().required("required"),
     occupation: yup.string().required("required")    
 })
 
-const initialValuesRegister = {
-    firstName: "",
-    lastName: "",
-    username: "",
-    email:"",
-    password: "",
-    location: "",
-    occupation: "",
-    allergens: [],
-    gender: "",
-}
+
 
 /**Will handle both login and register forms */
 const UpdateForm = () => {
@@ -50,120 +38,61 @@ const UpdateForm = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const isNonMobile = useMediaQuery("(min-width:600px)")
-    const isLogin = pageType === "login"
-    const isRegister = pageType === "register"
 
     console.log(user)
 
+    const initialValuesRegister = {
+        firstName: user["firstName"],
+        lastName: user["lastName"],
+        email:user["email"],
+        location: user["location"],
+        occupation: user["occupation"],
+        allergens: user["allergens"],
+        gender: user["gender"],
+    }
+
+    const token = useSelector((state) => state.token)
+    console.log(token);
+
     //function to communicate to backend
-    // const register = async (values, onSubmitProps) => {
-    //     // every value that is we've created in the text field will show up as values
-    //     // we have a picture image so we have to do sum a lil different
+    const infoUpdate = async (values, onSubmitProps) => {
         
-    //     const data={
-    //         "Username":values["username"],
-    //         "Password":values["password"],
-    //         "email":values["email"],
-    //         "Firstname":values["firstName"],
-    //         "Lastname":values["lastName"],
-    //     };
-    //     console.log(values);
-    //     console.log(data);
+        const data={
+            "email":values["email"],
+            "Firstname":values["firstName"],
+            "Lastname":values["lastName"],
+            "location": values["location"],
+            "occupation": values["occupation"],
+            "allergens": values["allergens"],
+            "gender": values["gender"]
+        };
+        console.log(data);
 
-    //     //sending post request 
-    //     // const registerResponse = await fetch(
-    //     //     "http://localhost:5000/users",
-    //     //     {
-    //     //         method:"POST",
-    //     //         headers: {"Content-Type": "application/json"},
-    //     //         body: JSON.stringify(data)
-    //     //     }
-    //     // )
-    //     // const savedUser = await registerResponse.json()
-    //     // const errorStatus = await registerResponse.status
+        const registerResponse = await fetch(
+            `/user/${user["__id"]}`,
+            {
+                method:"PATCH",
+                headers: {"Content-Type": "application/json","x-access-token":token["token"]},
+                body: JSON.stringify(data)
+            }
+        )
+        const savedUser = await registerResponse.json()
+        const errorStatus = await registerResponse.status
         
-    //     // if(savedUser) {
-    //     //     if(errorStatus!=201) {
-    //     //         console.log(savedUser);
-    //     //         alert(savedUser["message"])
-    //     //     }
-    //     //     else {
-    //     //         setPageType("login")
-    //     //         onSubmitProps.resetForm() //make sure our form is reset
-    //     //     }
-    //     // }
-    // }
-
-    // function to communicate to backend
-    // const login = async (values, onSubmitProps) => {
-
-    //     console.log(values);
-        
-    //     const loggedInResponse = await fetch(
-    //         "http://localhost:5000/login",
-    //         {
-    //             method:"POST",
-    //             headers: {"Content-Type": "application/json"},
-    //             body: JSON.stringify({
-    //                 "Username":values.username,
-    //                 "Password":values.password
-    //             })
-    //         }
-    //     ).catch((e)=>{
-    //         alert("Invalid username or password")
-    //         onSubmitProps.resetForm();
-    //     })
-        
-    //     const token = await loggedInResponse.json();
-
-    //     const user_details_response=await fetch(
-    //         `http://localhost:5000/user/${values.username}`,
-    //         {
-    //             method:"GET",
-    //             headers: {"Content-Type": "application/json","x-access-token":token["token"]}
-    //         }
-    //     ).catch((e)=>{
-    //         alert("Invalid username or password")
-    //         onSubmitProps.resetForm();
-    //     })
-
-    //     const data = await user_details_response.json();
-    //     console.log(data);
-
-    //     const loggedIn={
-    //         "user":{
-    //             "__id": data["users"]["Username"],
-    //             "firstName": data["users"]["FirstName"],
-    //             "lastName": data["users"]["LastName"],
-    //             "occupation": "CODER",
-    //             "location": "PUNE",
-    //             "gender":"Male",
-    //             "allergens":data["users"]["allergen_list"]
-    //         },
-    //         "token":token
-    //     }
-
-    //     onSubmitProps.resetForm()
-    //     if (loggedInResponse.status==201 && user_details_response.status==200 ) {
-    //         //coming from redux. we are setting the user and state to be used throughout the app
-    //         dispatch(
-    //             setLogin({
-    //                 user: loggedIn.user,
-    //                 token: loggedIn.token
-    //             })
-    //         )
-    //         navigate("/home")
-    //     }
-    //     else{
-    //         alert("Wrong username or password");
-    //     }
-    // }
+        if(savedUser) {
+            if(errorStatus!=201) {
+                console.log(savedUser);
+                alert(savedUser["error"])
+            }
+            else {
+                dispatch(setLogout());
+            }
+        }
+    }
 
     const handleFormSubmit = async(values, onSubmitProps) => {
         values.allergens=allergens
-        console.log(values);
-        // if (isLogin) await login(values, onSubmitProps)
-        // if (isRegister) await register(values, onSubmitProps)
+        await infoUpdate(values,onSubmitProps);
     }
 
     return (
@@ -204,7 +133,7 @@ const UpdateForm = () => {
                                     value={values.firstName}
                                     name="firstName"
                                     error={Boolean(touched.firstName) && Boolean(errors.firstName)}
-                                    helperText={touched.firstName && errors.firstName}
+                                    helpertext={touched.firstName && errors.firstName}
                                     sx={{ gridColumn: "span 2" }}
                                 />
                                 <TextField 
@@ -215,7 +144,7 @@ const UpdateForm = () => {
                                     value={values.lastName}
                                     name="lastName"
                                     error={Boolean(touched.lastName) && Boolean(errors.lastName)}
-                                    helperText={touched.lastName && errors.lastName}
+                                    helpertext={touched.lastName && errors.lastName}
                                     sx={{ gridColumn: "span 2" }}
                                 />
                                 <TextField 
@@ -226,7 +155,7 @@ const UpdateForm = () => {
                                     value={values.email}
                                     name="email"
                                     error={Boolean(touched.email) && Boolean(errors.email)}
-                                    helperText={touched.email && errors.email}
+                                    helpertext={touched.email && errors.email}
                                     sx={{ gridColumn: "span 4" }}
                                 />
                                 <TextField 
@@ -237,7 +166,7 @@ const UpdateForm = () => {
                                     value={values.location}
                                     name="location"
                                     error={Boolean(touched.location) && Boolean(errors.location)}
-                                    helperText={touched.location && errors.location}
+                                    helpertext={touched.location && errors.location}
                                     sx={{ gridColumn: "span 4" }}
                                 />
                                 <TextField 
@@ -248,7 +177,7 @@ const UpdateForm = () => {
                                     value={values.occupation}
                                     name="occupation"
                                     error={Boolean(touched.occupation) && Boolean(errors.occupation)}
-                                    helperText={touched.occupation && errors.occupation}
+                                    helpertext={touched.occupation && errors.occupation}
                                     sx={{ gridColumn: "span 4" }}
                                 />
                                 <InputLabel>Gender</InputLabel>
@@ -260,7 +189,7 @@ const UpdateForm = () => {
                                     value={values.gender}
                                     name="gender"
                                     error={Boolean(touched.gender) && Boolean(errors.gender)}
-                                    helperText={touched.gender && errors.gender}
+                                    helpertext={touched.gender && errors.gender}
                                     sx={{ gridColumn: "span 4" }}
                                 >
                                     <MenuItem value={"Male"}>Male</MenuItem>
@@ -282,29 +211,6 @@ const UpdateForm = () => {
                                 </Select>
                             </>
                         }
-
-                        {/**Login */}
-                        <TextField 
-                            label="Username"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.username}
-                            name="username"
-                            error={Boolean(touched.username) && Boolean(errors.username)}
-                            helperText={touched.username && errors.username}
-                            sx={{ gridColumn: "span 4" }}
-                        />
-                        <TextField 
-                            label="Password"
-                            type="password"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.password}
-                            name="password"
-                            error={Boolean(touched.password) && Boolean(errors.password)}
-                            helperText={touched.password && errors.password}
-                            sx={{ gridColumn: "span 4" }}
-                        />
 
                     </Box>
 

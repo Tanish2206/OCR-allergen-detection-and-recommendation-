@@ -3,7 +3,7 @@ import { useSelector } from "react-redux"
 import Navbar from "scenes/navbar"
 
 import FlexBetween from "components/FlexBetween"
-import MyPostWidget from "scenes/widgets/MyPostWidget"
+import UploadImageWidget from "scenes/widgets/UploadImageWidget"
 import UserWidget from "scenes/widgets/UserWidget"
 
 const HomePage = () => {
@@ -28,7 +28,7 @@ const HomePage = () => {
                         flexBasis={isNonMobileScreens ? "52%" : undefined}
                         mt={isNonMobileScreens ? undefined : "2rem"}
                     >
-                        <MyPostWidget picturePath={picturePath} />
+                        <UploadImageWidget picturePath={picturePath} />
                     </Box>
                 </FlexBetween>
             </Box>

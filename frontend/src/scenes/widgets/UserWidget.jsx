@@ -23,6 +23,7 @@ const UserWidget = ({ userId, picturePath }) => {
     const dark = palette.neutral.dark
     const medium = palette.neutral.medium
     const main = palette.neutral.main 
+    const data = useSelector((state) => state.user)
 
     const getUser = async () => {
         // const response = await fetch(`http://localhost:3001/users/${userId}`, {
@@ -30,15 +31,16 @@ const UserWidget = ({ userId, picturePath }) => {
         //     headers: { Authorization: `Bearer ${token}` }, //this is for our middleware auth.js
         // })
         // const data = await response.json()
-        const data={
-                "__id": "BIS",
-                "firstName": "BISLERI",
-                "lastName": "NIGGER",
-                "occupation": "CODER",
-                "location": "PUNE",
-                "gender":"Male",
-                "allergens":["Rugved","tanish"]
-            }
+
+        // const data={
+        //         "__id": "BIS",
+        //         "firstName": "BISLERI",
+        //         "lastName": "NIGGER",
+        //         "occupation": "CODER",
+        //         "location": "PUNE",
+        //         "gender":"Male",
+        //         "allergens":["Rugved","tanish"]
+        //     }
         setUser(data)
     }
 
@@ -96,8 +98,11 @@ const UserWidget = ({ userId, picturePath }) => {
                     "&:hover": {
                         color: palette.primary.main,
                         cursor: "pointer"
-                    }
-                }}/>
+                        }
+                    }}
+
+                    onClick={()=>navigate("/update")}
+                />
             </FlexBetween>
 
             <Divider />
