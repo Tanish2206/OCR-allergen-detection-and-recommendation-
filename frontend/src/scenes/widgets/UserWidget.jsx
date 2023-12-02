@@ -41,6 +41,7 @@ const UserWidget = ({ userId, picturePath }) => {
         //         "gender":"Male",
         //         "allergens":["Rugved","tanish"]
         //     }
+        //console.log(data);
         setUser(data)
     }
 

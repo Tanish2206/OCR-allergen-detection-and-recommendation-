@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
     Box,
     Button, 
@@ -31,15 +31,15 @@ const registerSchema = yup.object().shape({
 
 /**Will handle both login and register forms */
 const UpdateForm = () => {
-    const [allergens,setAllergens]=useState([])
-    const [pageType, setPageType] = useState("login")
+    const [selected_allergens,set_selected_allergens]=useState([])
+    const [avail_allergens,setAllergens]=useState([])
     const user = useSelector((state) => state.user)
     const { palette } = useTheme()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const isNonMobile = useMediaQuery("(min-width:600px)")
 
-    console.log(user)
+    // //console.log(user)
 
     const initialValuesRegister = {
         firstName: user["firstName"],
@@ -47,12 +47,11 @@ const UpdateForm = () => {
         email:user["email"],
         location: user["location"],
         occupation: user["occupation"],
-        allergens: user["allergens"],
-        gender: user["gender"],
+        allergens: user["allergens"]
     }
 
     const token = useSelector((state) => state.token)
-    console.log(token);
+    // //console.log(token);
 
     //function to communicate to backend
     const infoUpdate = async (values, onSubmitProps) => {
@@ -61,14 +60,12 @@ const UpdateForm = () => {
             "email":values["email"],
             "Firstname":values["firstName"],
             "Lastname":values["lastName"],
-            "location": values["location"],
-            "occupation": values["occupation"],
-            "allergens": values["allergens"],
-            "gender": values["gender"]
+            "Location": values["location"],
+            "Occupation": values["occupation"]
         };
-        console.log(data);
+        //console.log(values);
 
-        const registerResponse = await fetch(
+        const updateDetails = await fetch(
             `/user/${user["__id"]}`,
             {
                 method:"PATCH",
@@ -76,12 +73,27 @@ const UpdateForm = () => {
                 body: JSON.stringify(data)
             }
         )
-        const savedUser = await registerResponse.json()
-        const errorStatus = await registerResponse.status
+        const savedUser = await updateDetails.json()
+        const errorStatus = await updateDetails.status
+        
+        values['allergens'].forEach(element => {
+            fetch(
+                `/user/${user["__id"]}`,
+                {
+                    method:"POST",
+                    headers: {"Content-Type": "application/json","x-access-token":token["token"]},
+                    body: JSON.stringify({
+                        "allergenid":element
+                    })
+                }
+            )
+        });
+
+        // "allergens": values["allergens"],
         
         if(savedUser) {
             if(errorStatus!=201) {
-                console.log(savedUser);
+                // //console.log(savedUser);
                 alert(savedUser["error"])
             }
             else {
@@ -91,9 +103,23 @@ const UpdateForm = () => {
     }
 
     const handleFormSubmit = async(values, onSubmitProps) => {
-        values.allergens=allergens
+        values.allergens=selected_allergens
         await infoUpdate(values,onSubmitProps);
     }
+
+    const getAllergens=async()=>{
+        await fetch("/users",{
+                method:"GET",
+                headers: {"x-access-token":token["token"]}
+            }).then((resp)=>resp.json()).then((obj)=>{
+                // //console.log(obj);
+                setAllergens(obj["allergyType"]);
+        });
+    }
+
+    useEffect(()=>{
+        getAllergens()
+    },[])
 
     return (
         <Formik
@@ -180,34 +206,17 @@ const UpdateForm = () => {
                                     helpertext={touched.occupation && errors.occupation}
                                     sx={{ gridColumn: "span 4" }}
                                 />
-                                <InputLabel>Gender</InputLabel>
-                                <Select
-                                    required
-                                    label="Gender"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.gender}
-                                    name="gender"
-                                    error={Boolean(touched.gender) && Boolean(errors.gender)}
-                                    helpertext={touched.gender && errors.gender}
-                                    sx={{ gridColumn: "span 4" }}
-                                >
-                                    <MenuItem value={"Male"}>Male</MenuItem>
-                                    <MenuItem value={"Female"}>Female</MenuItem>
-                                </Select>
                                 <InputLabel>Allergic To</InputLabel>
                                 <Select
                                     multiple
                                     onBlur={handleBlur}
-                                    onChange={(event)=>setAllergens(event.target.value)}
+                                    onChange={(event)=>set_selected_allergens(event.target.value)}
                                     label="Allergens"
                                     name="allergens"
-                                    value={allergens}
+                                    value={selected_allergens}
                                     sx={{ gridColumn: "span 4"}}
                                 >
-                                    <MenuItem value={"Milk"}>Milk</MenuItem>
-                                    <MenuItem value={"Nuts"}>Nuts</MenuItem>
-                                    <MenuItem value={"Soy"}>Soy</MenuItem>
+                                    {avail_allergens.map((i)=><MenuItem value={i["id"]}>{i["name"]}</MenuItem>)}
                                 </Select>
                             </>
                         }

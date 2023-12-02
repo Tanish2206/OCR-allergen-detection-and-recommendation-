@@ -13,7 +13,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 from werkzeug.utils import secure_filename
-sys.path.append(os.getenv('ROOT_PATH'))
+sys.path.append("../")
 from Backend.User_api import token_required
 from Allergen_Detector.IsAllergic import allowed_file,compare_allergens
 from Text_Pr.text_processing import process_text
@@ -34,11 +34,13 @@ class UploadResult(Resource):
             return {'message':'no file selected'},400
        if file and allowed_file(file.filename) and file2 and allowed_file(file2.filename):
             filename=secure_filename(file.filename)
-            image_path=(os.path.join(os.getenv('IMAGE_PATH'),filename))
+            #image_path=(os.path.join(os.getenv('IMAGE_PATH'),filename))
+            image_path=filename
             file.save(image_path)
             # /////////////////////////////////////////////////
             filename2=secure_filename(file2.filename)
-            image_path2=(os.path.join(os.getenv('IMAGE_PATH'),filename2))
+            #image_path2=(os.path.join(os.getenv('IMAGE_PATH'),filename2))
+            image_path2=filename2
             file2.save(image_path2)
             # ///////////////////////////////////
             user=User.query.filter_by(username=u_name).first()

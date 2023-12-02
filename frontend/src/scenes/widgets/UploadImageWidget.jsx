@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Dropzone from "react-dropzone";
-import UserImage from "components/UserImage";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,32 +54,30 @@ const UploadImageWidget = ({ picturePath }) => {
     const [image2, setImage2] = useState(null)
     const [helpDialog, setHelp] = useState(false)
     const { palette } = useTheme()
+    const user = useSelector((state) => state.user)
+    const token = useSelector((state) => state.token)
     const medium = palette.neutral.medium
 
 
     //handles post api call
-    const handlePost = () => {
+    const handlePost = async () => {
 
-        let formData=new FormData();
+        const formData = new FormData();
 
         if (image1 && image2) {
-            formData.append("image1",image1);
-            formData.append("image2",image2);
+
+            formData.append("file1",image1);
+            formData.append("file2",image2);
+
+            fetch(`http://localhost:5000/upload/${user["__id"]}`, {
+                method: "POST",
+                headers: {"x-access-token":token["token"]},
+                body: formData
+            }).then((response)=>response.json()).then((resp)=>console.log(resp))
         }
         else{
             alert("please upload both images")
         }
-
-        console.log(formData);
-
-        // const response = await fetch(`http://localhost:3001/posts`, {
-        //     method: "POST",
-        //     headers: { Authorization: `Bearer ${token}`},
-        //     body: formData
-        // })
-        
-        // const posts = await response.json()
-        // dispatch(setPosts({ posts })) //set our posts state
 
         //reset 
         setImage1(null)
@@ -101,10 +98,12 @@ const UploadImageWidget = ({ picturePath }) => {
                     p="1rem"
                 >
                     <Dropzone
-                        acceptedFiles=".jpg,.jpeg,.png"
+                        accept="image/jpg, image/jpeg, image/png"
                         multiple={false} //no multiple files
-                        onDrop={(acceptedFiles) => //what we do with file
+                        onDrop={(acceptedFiles) => {
+                            //console.log(acceptedFiles[0]);
                             setImage1(acceptedFiles[0])
+                            }
                         } 
                     >
                         {({ getRootProps, getInputProps }) => (
@@ -117,7 +116,7 @@ const UploadImageWidget = ({ picturePath }) => {
                                 >
                                     <input {...getInputProps()} />
                                     {/**If the picture does not exist yet then... */}
-                                    {!image1 ? (<p>Add Nutrition Image Here</p>) : 
+                                    {!image1 ? (<p>Add Ingredients and Allergen Image Here</p>) : 
                                     (
                                         <FlexBetween>
                                             <Typography>{image1.name}</Typography>
@@ -145,11 +144,13 @@ const UploadImageWidget = ({ picturePath }) => {
                     p="1rem"
                 >
                     <Dropzone
-                        acceptedFiles=".jpg,.jpeg,.png"
+                        accept="image/jpg, image/jpeg, image/png"
                         multiple={false} //no multiple files
-                        onDrop={(acceptedFiles) => //what we do with file
+                        onDrop={(acceptedFiles) => {
+                            //console.log(acceptedFiles[0]);
                             setImage2(acceptedFiles[0])
-                        } 
+                            }
+                        }  
                     >
                         {({ getRootProps, getInputProps }) => (
                             <FlexBetween>
@@ -161,7 +162,7 @@ const UploadImageWidget = ({ picturePath }) => {
                                 >
                                     <input {...getInputProps()} />
                                     {/**If the picture does not exist yet then... */}
-                                    {!image2 ? (<p>Add Ingredients and Allergen Image Here</p>) : 
+                                    {!image2 ? (<p>Add Nutrition Table Image Here</p>) : 
                                     (
                                         <FlexBetween>
                                             <Typography>{image2.name}</Typography>
