@@ -15,6 +15,7 @@ load_dotenv()
 from werkzeug.utils import secure_filename
 sys.path.append("../")
 from Backend.User_api import token_required
+from Recommendation.recsys import get_recommendations_1
 from Allergen_Detector.IsAllergic import allowed_file,compare_allergens
 from Text_Pr.text_processing import process_text
 from OCR.OCR import finalfunc
@@ -34,13 +35,13 @@ class UploadResult(Resource):
             return {'message':'no file selected'},400
        if file and allowed_file(file.filename) and file2 and allowed_file(file2.filename):
             filename=secure_filename(file.filename)
-            #image_path=(os.path.join(os.getenv('IMAGE_PATH'),filename))
-            image_path=filename
+            image_path=(os.path.join(os.getenv('IMAGE_PATH'),filename))
+            # image_path=filename
             file.save(image_path)
             # /////////////////////////////////////////////////
             filename2=secure_filename(file2.filename)
-            #image_path2=(os.path.join(os.getenv('IMAGE_PATH'),filename2))
-            image_path2=filename2
+            image_path2=(os.path.join(os.getenv('IMAGE_PATH'),filename2))
+            # image_path2=filename2
             file2.save(image_path2)
             # ///////////////////////////////////
             user=User.query.filter_by(username=u_name).first()
@@ -54,23 +55,31 @@ class UploadResult(Resource):
                 for j in Temp_list:
                     User_allergen_list.append(j.name)
             Ocr_image_text=finalfunc(image_path)
-            print(Ocr_image_text)
+            # print(Ocr_image_text)
             Text_Process_result=process_text(Ocr_image_text)
-            print(Text_Process_result)
+            # print(Text_Process_result)
             if len(Text_Process_result["Ingredients"])==0 or Text_Process_result["Ingredients"] is None :
                 return {'message':'Reupload Ingredients Image'},400
             else:
                 Is_Allergic=compare_allergens(Text_Process_result['Ingredients'],User_allergen_list)
-            
+            os.remove(image_path)
             Ocr_image_text2=finalfunc(image_path2)
             Text_Process_result2=process_text(Ocr_image_text2)
 
-            print(Ocr_image_text2)
+            # print(Ocr_image_text2)
             if Text_Process_result2['Nutrients']['Protein'] is None or  Text_Process_result2['Nutrients']['Carbohydrate'] is None or Text_Process_result2['Nutrients']['TotalFat'] is None:
                  return {'message':'Reupload Nutrient Table Image'},400
             else:
                 os.remove(image_path2)
-                return{'isAllergic':Is_Allergic,'Protein':Text_Process_result2['Nutrients']['Protein'],'Carbs':Text_Process_result2['Nutrients']['Carbohydrate'],'Fats':Text_Process_result2['Nutrients']['TotalFat']}
+                Input_Ingredients=""
+                if Is_Allergic:
+                    for i in Text_Process_result["Ingredients"]:
+                        Input_Ingredients+=i
+
+                    recommendation_list=get_recommendations_1(Input_Ingredients)
+                    return{'isAllergic':Is_Allergic,'Protein':Text_Process_result2['Nutrients']['Protein'],'Carbs':Text_Process_result2['Nutrients']['Carbohydrate'],'Fats':Text_Process_result2['Nutrients']['TotalFat'],'Recommended_Products':recommendation_list}
+                else:
+                    return{'isAllergic':Is_Allergic,'Protein':Text_Process_result2['Nutrients']['Protein'],'Carbs':Text_Process_result2['Nutrients']['Carbohydrate'],'Fats':Text_Process_result2['Nutrients']['TotalFat'],'Recommended_Products':None}
             
 
         
