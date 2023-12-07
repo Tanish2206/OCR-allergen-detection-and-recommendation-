@@ -42,7 +42,6 @@ const initialValuesRegister = {
     password: "",
     location: "",
     occupation: "",
-    allergens: [],
     gender: "",
 }
 
@@ -73,9 +72,12 @@ const Form = () => {
             "email":values["email"],
             "Firstname":values["firstName"],
             "Lastname":values["lastName"],
+            "Gender":values["gender"],
+            "Location":values["location"],
+            "Occupation":values["occupation"]
         };
-        console.log(values);
-        console.log(data);
+        //console.log(values);
+        //console.log(data);
 
         //sending post request 
         const registerResponse = await fetch(
@@ -91,7 +93,7 @@ const Form = () => {
         
         if(savedUser) {
             if(errorStatus!=201) {
-                console.log(savedUser);
+                //console.log(savedUser);
                 alert(savedUser["message"])
             }
             else {
@@ -104,7 +106,7 @@ const Form = () => {
     // function to communicate to backend
     const login = async (values, onSubmitProps) => {
 
-        console.log(values);
+        //console.log(values);
         
         const loggedInResponse = await fetch(
             "/login",
@@ -135,7 +137,7 @@ const Form = () => {
         })
 
         const data = await user_details_response.json();
-        console.log(data);
+        //console.log(data);
 
         const loggedIn={
             "user":{
@@ -143,9 +145,9 @@ const Form = () => {
                 "firstName": data["users"]["FirstName"],
                 "lastName": data["users"]["LastName"],
                 "email": data["users"]["Email"],
-                "occupation": "CODER",
-                "location": "PUNE",
-                "gender":"Male",
+                "occupation": data["users"]["Occupation"],
+                "location": data["users"]["Location"],
+                "gender":data["users"]["Gender"],
                 "allergens":data["users"]["allergen_list"]
             },
             "token":token
@@ -168,8 +170,7 @@ const Form = () => {
     }
 
     const handleFormSubmit = async(values, onSubmitProps) => {
-        values.allergens=allergens
-        //console.log(values);
+        ////console.log(values);
         if (isLogin) await login(values, onSubmitProps)
         if (isRegister) await register(values, onSubmitProps)
     }
@@ -265,7 +266,7 @@ const Form = () => {
                                     label="Gender"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
-                                    value={values.gender}
+                                    value={values.gender || "Male"}
                                     name="gender"
                                     error={Boolean(touched.gender) && Boolean(errors.gender)}
                                     helpertext={touched.gender && errors.gender}
@@ -273,20 +274,6 @@ const Form = () => {
                                 >
                                     <MenuItem value={"Male"}>Male</MenuItem>
                                     <MenuItem value={"Female"}>Female</MenuItem>
-                                </Select>
-                                <InputLabel>Allergic To</InputLabel>
-                                <Select
-                                    multiple
-                                    onBlur={handleBlur}
-                                    onChange={(event)=>setAllergens(event.target.value)}
-                                    label="Allergens"
-                                    name="allergens"
-                                    value={allergens}
-                                    sx={{ gridColumn: "span 4"}}
-                                >
-                                    <MenuItem value={"Milk"}>Milk</MenuItem>
-                                    <MenuItem value={"Nuts"}>Nuts</MenuItem>
-                                    <MenuItem value={"Soy"}>Soy</MenuItem>
                                 </Select>
                             </>
                         )}
