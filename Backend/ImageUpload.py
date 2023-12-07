@@ -52,22 +52,18 @@ class UploadResult(Resource):
                 for j in Temp_list:
                     User_allergen_list.append(j.name)
             Ocr_image_text=finalfunc(image_path)
+            print(Ocr_image_text)
             Text_Process_result=process_text(Ocr_image_text)
-            if Text_Process_result["Ingredients"] is None:
+            print(Text_Process_result)
+            if len(Text_Process_result["Ingredients"])==0 or Text_Process_result["Ingredients"] is None :
                 return {'message':'Reupload Ingredients Image'},400
             else:
                 Is_Allergic=compare_allergens(Text_Process_result['Ingredients'],User_allergen_list)
-                os.remove(image_path)
-                # return {'isAllergic':Is_Allergic}
-
+            
             Ocr_image_text2=finalfunc(image_path2)
             Text_Process_result2=process_text(Ocr_image_text2)
-            # print(Text_Process_result2)
-            # print(Text_Process_result2['Nutrients']['Protein'])
-            # print(Text_Process_result2['Nutrients']['Carbohydrate'])
-            # print(Text_Process_result2['Nutrients']['TotalFat'])
 
-              
+            print(Ocr_image_text2)
             if Text_Process_result2['Nutrients']['Protein'] is None or  Text_Process_result2['Nutrients']['Carbohydrate'] is None or Text_Process_result2['Nutrients']['TotalFat'] is None:
                  return {'message':'Reupload Nutrient Table Image'},400
             else:

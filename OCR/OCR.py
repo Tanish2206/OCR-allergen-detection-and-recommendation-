@@ -7,7 +7,7 @@ from Text_Pr.text_processing import process_text
 import base64
 
 # Set the path to the Tesseract executable
-pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 def get_grayscale(image_path):
     img = cv2.imread(image_path)
