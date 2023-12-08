@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+CSV_PATH="..\\Recommendation\\new.csv"
 
 #Basic Libraries
 import numpy as np
@@ -19,7 +20,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 def get_recommendations_1(s):
-    df=pd.read_csv('D:\\Update version\\OCR-allergen-detection-and-recommendation-\\Recommendation\\new.csv')
+    df=pd.read_csv(CSV_PATH)
     df=df.dropna()
     # s='sugar,cashew pieces,almond Pieces, stabilizers,artificial flavouring substances cardamom,honey,saffron,colour,Milk'
     df2=pd.DataFrame({'brand':['0'],'categories':['0'],'features.value':[s],'manufacturer':['0'],'name':['0']})

@@ -5,8 +5,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 
-const ResultWidget = ({  name, protein,carbs,fats, 
-                       picturePath,  }) => {
+const ResultWidget = ({  name, category,ingredients,manufacturer }) => {
 
     const dispatch = useDispatch()
     const token = useSelector((state) => state.token)
@@ -37,24 +36,25 @@ const ResultWidget = ({  name, protein,carbs,fats,
                         </Typography>
                     </Box>
             </FlexBetween>
-            <Typography color={neutralMain} sx={{mt: "1rem"}}>
-                Protein: {protein}
+            <Typography
+                            variant="h6"
+                            color={dark}
+                            fontWeight="500"
+                            sx={{mt: "1rem"}}
+            >
+                {category}
+            </Typography>
+            <Typography
+                            variant="h6"
+                            color={dark}
+                            fontWeight="500"
+                            sx={{mt: "0.2rem"}}
+            >
+                {manufacturer}
             </Typography>
             <Typography color={neutralMain} sx={{mt: "1rem"}}>
-                Carbs: {carbs}
+                <b>Ingredients: </b>{ingredients}
             </Typography>
-            <Typography color={neutralMain} sx={{mt: "1rem"}}>
-                Fats: {fats}
-            </Typography>
-            {picturePath && (
-                <img 
-                    width="100%" 
-                    height="auto" 
-                    alt="post" 
-                    style={{borderRadius: "0.75rem", marginTop: "0.75rem"}}
-                    src={`/assets/${picturePath}`}
-                />
-            )}
             <FlexBetween mt="0.25rem">
 
             </FlexBetween>

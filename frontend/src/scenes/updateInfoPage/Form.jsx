@@ -206,7 +206,7 @@ const UpdateForm = () => {
                                     helpertext={touched.occupation && errors.occupation}
                                     sx={{ gridColumn: "span 4" }}
                                 />
-                                <InputLabel>Allergic To</InputLabel>
+                                <InputLabel>Add Allergens</InputLabel>
                                 <Select
                                     multiple
                                     onBlur={handleBlur}

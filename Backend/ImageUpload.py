@@ -35,13 +35,13 @@ class UploadResult(Resource):
             return {'message':'no file selected'},400
        if file and allowed_file(file.filename) and file2 and allowed_file(file2.filename):
             filename=secure_filename(file.filename)
-            image_path=(os.path.join(os.getenv('IMAGE_PATH'),filename))
-            # image_path=filename
+            # image_path=(os.path.join(os.getenv('IMAGE_PATH'),filename))
+            image_path=filename
             file.save(image_path)
             # /////////////////////////////////////////////////
             filename2=secure_filename(file2.filename)
-            image_path2=(os.path.join(os.getenv('IMAGE_PATH'),filename2))
-            # image_path2=filename2
+            # image_path2=(os.path.join(os.getenv('IMAGE_PATH'),filename2))
+            image_path2=filename2
             file2.save(image_path2)
             # ///////////////////////////////////
             user=User.query.filter_by(username=u_name).first()

@@ -3,10 +3,16 @@ import { useSelector } from "react-redux"
 import Navbar from "scenes/navbar"
 import UserWidget from "scenes/widgets/UserWidget"
 import ResultsWidget from "scenes/widgets/ResultsWidget"
+import { useEffect } from "react"
 
 const ResultPage = () => {
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)")
     const { _id, picturePath } = useSelector((state) => state.user)
+    const alternatives=useSelector((state)=>state.alternatives)
+
+    useEffect(()=>{
+        console.log(alternatives);
+    },[]);
 
     return (
         <Box>

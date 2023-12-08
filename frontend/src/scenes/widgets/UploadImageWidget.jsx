@@ -11,14 +11,15 @@ import {
     useTheme,
     Button,
     IconButton,
-    useMediaQuery,
 } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Dropzone from "react-dropzone";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {Dialog,DialogTitle} from '@mui/material';
+import { setAllergens, setAlternatives } from "state";
 
 function SimpleDialog(props) {
     const { open ,onClose} = props;
@@ -52,12 +53,13 @@ const UploadImageWidget = ({ picturePath }) => {
     //actual image
     const [image1, setImage1] = useState(null)
     const [image2, setImage2] = useState(null)
+    const navigate = useNavigate();
     const [helpDialog, setHelp] = useState(false)
     const { palette } = useTheme()
     const user = useSelector((state) => state.user)
     const token = useSelector((state) => state.token)
     const medium = palette.neutral.medium
-
+    const dispatch = useDispatch()
 
     //handles post api call
     const handlePost = async () => {
@@ -73,7 +75,24 @@ const UploadImageWidget = ({ picturePath }) => {
                 method: "POST",
                 headers: {"x-access-token":token["token"]},
                 body: formData
-            }).then((response)=>response.json()).then((resp)=>console.log(resp))
+            }).then((response)=>response.json()).then((resp)=>{
+                if(resp["isAllergic"]==false)
+                {
+                    alert("You are not allergic!")
+                }
+                else if(resp["message"]){
+                    alert(resp["message"])
+                }
+                else{
+                    dispatch(
+                        setAlternatives({
+                            alternatives: resp["Recommended_Products"]
+                        })
+                    );
+                    console.log(resp);
+                    navigate("/result");
+                }
+            })
         }
         else{
             alert("please upload both images")

@@ -1,42 +1,26 @@
+import { useSelector } from "react-redux"
 import ResultWidget from "./ResultWidget"
 
 const ResultsWidget = () => {
 
-    const posts=[
-        {
-            "name":"COKE",
-            "Protein":"20g",
-            "Carbs":"100g",
-            "Fats":"2g",
-            "picturePath":"wall.jpg"
-        },
-        {
-            "name":"AMUL",
-            "Protein":"20g",
-            "Carbs":"100g",
-            "Fats":"2g",
-            "picturePath":"mlik.jpg"
-        }
-    ]
+    const posts=useSelector((state)=>state.alternatives)
 
     return (
         <>
             {/**Print posts in reverse order to simulate an actual social media site */}
-            {posts.slice(0).reverse().map(  
+            {posts.slice(0,3).map(  
                 //destructure info 
                 ({
                     name,
-                    Protein,
-                    Carbs,
-                    Fats,
-                    picturePath,
+                    Category,
+                    Ingredients,
+                    Manufacturer
                 }) => (
                     <ResultWidget
                         name={name}
-                        protein={Protein}
-                        carbs={Carbs}
-                        fats={Fats}
-                        picturePath={picturePath}
+                        category={Category}
+                        ingredients={Ingredients}
+                        manufacturer={Manufacturer}
                     />
                 )
             )}
