@@ -42,7 +42,7 @@ const initialValuesRegister = {
     password: "",
     location: "",
     occupation: "",
-    gender: "",
+    gender: "Male",
 }
 
 const initialValuesLogin = {
@@ -77,7 +77,7 @@ const Form = () => {
             "Occupation":values["occupation"]
         };
         //console.log(values);
-        //console.log(data);
+        console.log(data);
 
         //sending post request 
         const registerResponse = await fetch(
@@ -93,8 +93,8 @@ const Form = () => {
         
         if(savedUser) {
             if(errorStatus!=201) {
-                //console.log(savedUser);
-                alert(savedUser["message"])
+                // console.log(savedUser["error"]);
+                alert(savedUser["error"])
             }
             else {
                 setPageType("login")
@@ -266,7 +266,7 @@ const Form = () => {
                                     label="Gender"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
-                                    value={values.gender || "Male"}
+                                    value={values.gender}
                                     name="gender"
                                     error={Boolean(touched.gender) && Boolean(errors.gender)}
                                     helpertext={touched.gender && errors.gender}
